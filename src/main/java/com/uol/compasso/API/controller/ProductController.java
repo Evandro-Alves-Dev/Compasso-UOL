@@ -11,15 +11,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
-@RequestMapping("/products")
+@RequestMapping(value = "/products")
 public class ProductController {
 
     @Autowired
     ProductService productService;
 
-    @PostMapping
-    public ResponseEntity<ProductResponse> cadastroProduto(@RequestBody ProductRequest productRequest){
+    @PostMapping()
+    public ResponseEntity<ProductResponse> cadastroProduto(@RequestBody @Valid ProductRequest productRequest){
         ProductResponse response = productService.cadastraProduto(productRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
