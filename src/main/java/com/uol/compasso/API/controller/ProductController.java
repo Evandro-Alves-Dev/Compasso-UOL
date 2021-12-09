@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/products")
@@ -28,4 +29,24 @@ public class ProductController {
         ProductResponse response = productService.alterarProduto(id, productRequest);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<ProductResponse> retornaProduto(@PathVariable Long id){
+        ProductResponse response = productService.retornarProduto(id);
+        return ResponseEntity.ok(response);
+
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<ProductResponse>> retornaListaProdutos(){
+        List<ProductResponse> responseList = productService.retornarListaProdutos();
+        return ResponseEntity.ok(responseList);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void deletaProduto(@PathVariable Long id){
+        productService.deletarProduto(id);
+    }
+
 }

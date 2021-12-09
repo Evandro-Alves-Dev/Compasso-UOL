@@ -11,11 +11,15 @@ import com.uol.compasso.API.mapper.MapperProductRequestToProduct;
 import com.uol.compasso.API.mapper.MapperProductToProductResponse;
 import com.uol.compasso.API.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -62,6 +66,39 @@ public class ProductService {
         ProductResponse response = mapperProductToProductResponse.toDto(saved);
 
         return response;
+    }
+
+    public ProductResponse retornarProduto(Long id) {
+        Optional<Product> existsProduct = productRepository.findById(id);
+
+        if (Objects.isNull(existsProduct) || existsProduct.isEmpty() ){
+            throw new ProductException("Id informado não existe");
+        }
+
+        ProductResponse response = mapperProductToProductResponse.toDto(existsProduct.get());
+
+        return response;
+
+    }
+
+    public List<ProductResponse> retornarListaProdutos() {
+        List<Product> productList = productRepository.findAll();
+        List<ProductResponse> productResponseList = productList.stream().map(product -> {
+            ProductResponse productResponse = mapperProductToProductResponse.toDto(product);
+            return productResponse;
+        }).collect(Collectors.toList());
+
+        return productResponseList;
+    }
+
+    public void deletarProduto(Long id) {
+        Optional<Product> existsProduct = productRepository.findById(id);
+
+        if (Objects.isNull(existsProduct) || existsProduct.isEmpty() ) {
+            throw new ProductException("Id informado não existe");
+        }
+
+        productRepository.deleteById(id);
     }
 
     public void validaProduto(ProductRequest productRequest){
