@@ -1,9 +1,5 @@
 package com.uol.compasso.API.exceptions.handle;
 
-import lombok.Data;
-import org.springframework.http.HttpStatus;
-
-
 public class ResponseException {
 
     private Integer status_code;

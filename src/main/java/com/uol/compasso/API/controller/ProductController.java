@@ -6,10 +6,7 @@ import com.uol.compasso.API.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -22,7 +19,13 @@ public class ProductController {
 
     @PostMapping()
     public ResponseEntity<ProductResponse> cadastroProduto(@RequestBody @Valid ProductRequest productRequest){
-        ProductResponse response = productService.cadastraProduto(productRequest);
+        ProductResponse response = productService.cadastrarProduto(productRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ProductResponse> alteraProduto(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
+        ProductResponse response = productService.alterarProduto(id, productRequest);
+        return ResponseEntity.ok(response);
     }
 }

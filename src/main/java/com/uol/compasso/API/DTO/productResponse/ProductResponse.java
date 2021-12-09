@@ -1,7 +1,5 @@
 package com.uol.compasso.API.DTO.productResponse;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.math.BigDecimal;
 
 public class ProductResponse {
