@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -35,6 +36,12 @@ public class ProductController {
         ProductResponse response = productService.retornarProduto(id);
         return ResponseEntity.ok(response);
 
+    }
+
+    @GetMapping(value = "/search")
+    public ResponseEntity<List<ProductResponse>> procuraProdutos(BigDecimal max_price, BigDecimal min_price, String q){
+        List<ProductResponse> responseList = productService.procurarProdutos(max_price, min_price, q);
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping()

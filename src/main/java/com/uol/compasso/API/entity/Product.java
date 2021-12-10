@@ -1,13 +1,11 @@
 package com.uol.compasso.API.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "PRODUCT")
 public class Product {
 
     @Id
@@ -20,7 +18,7 @@ public class Product {
 
     private BigDecimal price;
 
-    public Product(Long id, @NotBlank String name, @NotBlank String description, @NotBlank BigDecimal price) {
+    public Product(Long id, String name, String description, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.description = description;

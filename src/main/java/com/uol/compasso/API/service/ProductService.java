@@ -11,11 +11,10 @@ import com.uol.compasso.API.mapper.MapperProductRequestToProduct;
 import com.uol.compasso.API.mapper.MapperProductToProductResponse;
 import com.uol.compasso.API.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +33,7 @@ public class ProductService {
     private MapperProductRequestToProduct mapperProductRequestToProduct;
 
     public ProductResponse cadastrarProduto(ProductRequest productRequest){
-        validaProduto(productRequest);
+        validaEntradaProduto(productRequest);
 
         Product product = mapperProductRequestToProduct.toDto(productRequest);
 
@@ -46,7 +45,7 @@ public class ProductService {
     }
 
     public ProductResponse alterarProduto(Long id, ProductRequest productRequest) {
-        validaProduto(productRequest);
+        validaEntradaProduto(productRequest);
 
         Optional<Product> existsProduct = productRepository.findById(id);
 
@@ -91,6 +90,37 @@ public class ProductService {
         return productResponseList;
     }
 
+    public List<ProductResponse> procurarProdutos(BigDecimal max_price, BigDecimal min_price, String q) {
+        List<ProductResponse> listResponse = new ArrayList<>();
+
+        List<Product> listAllProducts = productRepository.findAll();
+
+        if (Objects.isNull(listAllProducts)){
+            return listResponse;
+        }
+
+        validaFiltroLista(max_price, min_price, q, listAllProducts);
+
+        if (max_price == null) {
+            max_price = new BigDecimal("0");
+        }
+        if (min_price == null) {
+            min_price = new BigDecimal("0");
+        }
+
+        for (Product item: listAllProducts) {
+            if (item.getName().equalsIgnoreCase(q) || item.getDescription().contains(q)){
+                if (item.getPrice().compareTo(max_price) < 0
+                        || (item.getPrice().compareTo(min_price) > 0)){
+                    ProductResponse response = mapperProductToProductResponse.toDto(item);
+                    listResponse.add(response);
+                }
+            }
+        }
+
+        return listResponse;
+    }
+
     public void deletarProduto(Long id) {
         Optional<Product> existsProduct = productRepository.findById(id);
 
@@ -101,7 +131,7 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public void validaProduto(ProductRequest productRequest){
+    private void validaEntradaProduto(ProductRequest productRequest){
         int priceChecked = productRequest.getPrice().compareTo(new BigDecimal("0.1"));
 
         if (Objects.isNull(productRequest.getName()) || productRequest.getName().isEmpty()) {
@@ -113,5 +143,18 @@ public class ProductService {
         }else if (priceChecked < 0){
             throw new PriceException("Preço deve conter valor positivo");
         }
+    }
+
+    private List validaFiltroLista(BigDecimal max_price, BigDecimal min_price, String q, List<Product> listAllProducts){
+        List<ProductResponse> listResponse = new ArrayList<>();
+
+        if (q.isEmpty() && min_price == null && max_price == null){
+            listResponse = listAllProducts.stream().map(product -> {
+                ProductResponse productResponse = mapperProductToProductResponse.toDto(product);
+                return productResponse;
+            }).collect(Collectors.toList());
+            return listResponse;
+        }
+        return null;
     }
 }
