@@ -1,7 +1,6 @@
 package com.uol.compasso.API.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 @Entity

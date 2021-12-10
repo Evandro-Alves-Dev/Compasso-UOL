@@ -55,5 +55,4 @@ public class ProductController {
     public void deletaProduto(@PathVariable Long id){
         productService.deletarProduto(id);
     }
-
 }
