@@ -15,6 +15,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.any;
@@ -42,6 +44,10 @@ public class ProductServiceTest {
 
     Optional<Product> product;
 
+    Product product2;
+
+    List<Product> productList = new ArrayList<>();
+
     @Before
     public void setUp(){
         productRequest = new ProductRequest("Teclado",
@@ -49,6 +55,11 @@ public class ProductServiceTest {
         id = 1L;
         product = Optional.of(new Product(1L, "Tecaldo novo",
                 "Produto para inserir informações ao computador", new BigDecimal("299.00")));
+        product2 = new Product(1L, "Cabo HDMI",
+                "Cabo para transferir audio e video da alta qualidade para um monitor", new BigDecimal("45.00"));
+
+        productList.add(product2);
+
     }
 
     @Test
@@ -67,5 +78,20 @@ public class ProductServiceTest {
         when(mapperProductToProductResponse.toDto(any())).thenReturn(new ProductResponse());
 
         this.productService.alterarProduto(id, productRequest);
+    }
+
+    @Test
+    public void retornarProdutoTest(){
+        when(productRepository.findById(id)).thenReturn(product);
+        when(mapperProductToProductResponse.toDto(any())).thenReturn(new ProductResponse());
+
+        this.productService.retornarProduto(id);
+    }
+
+    @Test
+    public void retornarListaProdutos(){
+        when(productRepository.findAll()).thenReturn(productList);
+
+        this.productService.retornarListaProdutos();
     }
 }
