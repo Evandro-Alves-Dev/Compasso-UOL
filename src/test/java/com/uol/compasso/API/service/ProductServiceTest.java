@@ -41,12 +41,12 @@ public class ProductServiceTest {
     private ProductRequest productRequest;
 
     Long id;
-
     Optional<Product> product;
-
     Product product2;
-
     List<Product> productList = new ArrayList<>();
+    BigDecimal max_price;
+    BigDecimal min_price;
+    String q;
 
     @Before
     public void setUp(){
@@ -57,9 +57,10 @@ public class ProductServiceTest {
                 "Produto para inserir informações ao computador", new BigDecimal("299.00")));
         product2 = new Product(1L, "Cabo HDMI",
                 "Cabo para transferir audio e video da alta qualidade para um monitor", new BigDecimal("45.00"));
-
         productList.add(product2);
-
+        max_price = new BigDecimal("900.00");
+        min_price = new BigDecimal("50.00");
+        q = "Ca";
     }
 
     @Test
@@ -89,9 +90,23 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void retornarListaProdutos(){
+    public void retornarListaProdutosTest(){
         when(productRepository.findAll()).thenReturn(productList);
 
         this.productService.retornarListaProdutos();
+    }
+
+    @Test
+    public void procurarProdutosTest(){
+        when(productRepository.findAll()).thenReturn(productList);
+
+        this.productService.procurarProdutos(max_price, min_price, q);
+    }
+
+    @Test
+    public void deletarProdutoTest(){
+        when(productRepository.findById(id)).thenReturn(product);
+
+        this.productService.deletarProduto(id);
     }
 }
